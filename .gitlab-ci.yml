@@ -1,0 +1,13 @@
+stages:
+  - test
+
+rust:
+  stage: test
+  image: rust:1.88
+  before_script:
+    - rustup component add rustfmt clippy
+  script:
+    - cargo fmt --check
+    - cargo clippy --all-targets --all-features -- -D warnings
+    - cargo test --all-targets --all-features
+
