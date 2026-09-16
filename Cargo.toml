@@ -6,6 +6,12 @@ rust-version = "1.88"
 license = "LGPL-3.0-or-later"
 description = "A Rust peer for the Glycoprotein local IPC mesh"
 readme = "README.md"
+repository = "https://gitlab.com/LiPolymer/glycoprotein-rs"
+homepage = "https://github.com/LiPolymer/glycoprotein-rs"
+documentation = "https://docs.rs/glycoprotein"
+keywords = ["ipc", "mesh", "async", "interop"]
+categories = ["asynchronous", "network-programming"]
+publish = ["crates-io"]
 
 [dependencies]
 async-trait = "0.1.89"
