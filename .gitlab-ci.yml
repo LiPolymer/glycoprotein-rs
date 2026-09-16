@@ -78,7 +78,7 @@ publish_crates_io:
   image: rust:1.88
   needs:
     - job: release_metadata
-      artifacts: true
+      artifacts: false
     - job: rust
       artifacts: false
   resource_group: crates-io-release
@@ -88,6 +88,12 @@ publish_crates_io:
     - |
       if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then
         echo "CARGO_REGISTRY_TOKEN is not configured." >&2
+        exit 1
+      fi
+
+      if [ -n "$(git status --porcelain)" ]; then
+        echo "The publish checkout is not clean:" >&2
+        git status --short >&2
         exit 1
       fi
     - cargo publish --dry-run --locked --registry crates-io
