@@ -6,8 +6,24 @@ rust:
   image: rust:1.88
   before_script:
     - rustup component add rustfmt clippy
+    - cargo install cargo2junit --version 0.1.15 --locked
   script:
     - cargo fmt --check
     - cargo clippy --all-targets --all-features -- -D warnings
-    - cargo test --all-targets --all-features
-
+    - |
+      set +e
+      RUSTC_BOOTSTRAP=1 cargo test --all-targets --all-features -- -Z unstable-options --format json --report-time | tee test-results.json
+      test_status=${PIPESTATUS[0]}
+      cargo2junit < test-results.json > junit.xml
+      report_status=$?
+      if [ "$report_status" -ne 0 ]; then
+        exit "$report_status"
+      fi
+      exit "$test_status"
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+    paths:
+      - junit.xml
+    expire_in: 1 week
